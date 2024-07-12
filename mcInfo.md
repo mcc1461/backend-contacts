@@ -10,6 +10,7 @@ npm i dotenv
 npm i express-async-handler
 npm i mongoose
 npm i bcrypt
+npm i jsonwebtoken
 
 
 ```bash

@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 //================ Public functions ================//
@@ -45,21 +46,32 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
 
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Please provide email and password");
+  }
   const user = await User.findOne({ email });
 
+  //compare password with hashed password
   if (user && (await bcrypt.compare(password, user.password))) {
-    res.json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      token: null, // You should generate a token here if you are using JWT
-    });
+    const accessToken = jwt.sign(
+      { 
+        user: {
+          username: user.username,
+          email: user.email,
+          id: user._id
+        },
+      }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "7d" }
+    )
+    res.status(200).json({
+      message: "Login successful",
+      token: accessToken,
+    }) 
   } else {
-    res.status(401);
-    throw new Error("Invalid email or password");
-  }
+      res.status(401);
+      throw new Error("Invalid email or password");
+    };
 });
 
 //@desc Get current user
@@ -67,15 +79,16 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access Private
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  console.log("currentUser:", user);
-
+  const user = await User.findById(req.user.id).select("-password");
   if (user) {
-    res.json(user);
+    res.status(200).json(user);
   } else {
     res.status(404);
     throw new Error("User not found");
   }
-});
+}
+);
+
+
 
 module.exports = { registerUser, loginUser, getCurrentUser };
