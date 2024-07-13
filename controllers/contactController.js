@@ -23,6 +23,11 @@ const createContact = asyncHandler(async (req, res) => {
   if (!name || !surname || !email || !phone || !country || !city) {
     return res.status(400).json({ message: "Please enter all fields!" });
   }
+  checkContact = await Contact.findOne({email});
+  if (checkContact) {
+    return res.status(400).json({ message: `Contact with email ${email} already exists!` });
+  }
+
   const contact = await Contact.create({
     user_id: req.user.id,
     name,
@@ -46,6 +51,10 @@ const getContact = asyncHandler(async (req, res) => {
   if (!contact) {
     return res.status(404).json({ message: `Contact with id ${req.params.id} not found!` });
   } 
+  if (contact.user_id.toString() !== req.user.id.toString()) {
+    res.status(403);
+    throw new Error("User do not have permission to GET other user contacts");
+  }
   res.status(200).json(contact);
 });
 

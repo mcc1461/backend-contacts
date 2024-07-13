@@ -19,6 +19,26 @@ const userSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-);
+  );
+
+ // Pre-save hook to increase createdAt and updatedAt by 3 hours
+userSchema.pre('save', function(next) {
+  const date = new Date();
+  const adjustedDate = new Date(date.getTime() + 3 * 60 * 60 * 1000);
+  
+  if (this.isNew) { // Only adjust the createdAt for new documents
+    this.createdAt = adjustedDate;
+  }
+  this.updatedAt = adjustedDate;
+  next();
+});
+
+// Pre-update hook to increase updatedAt by 3 hours
+userSchema.pre('findOneAndUpdate', function(next) {
+  const date = new Date();
+  const adjustedDate = new Date(date.getTime() + 3 * 60 * 60 * 1000);
+  this.set({ updatedAt: adjustedDate });
+  next();
+});
 
 module.exports = mongoose.model("User", userSchema);
