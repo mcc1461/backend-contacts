@@ -1,3 +1,4 @@
+//: userController.js is a file that contains the functions for the user endpoints.
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -79,16 +80,8 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access Private
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select("-password");
-  if (user) {
-    res.status(200).json(user);
-  } else {
-    res.status(404);
-    throw new Error("User not found");
-  }
-}
-);
-
+  res.status(200).json(req.user);
+});
 
 
 module.exports = { registerUser, loginUser, getCurrentUser };
