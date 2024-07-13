@@ -1,18 +1,19 @@
-//: userRoutes.js is a file that contains the routes for the user endpoints.
 const express = require("express");
+const {
+  getContacts,
+  createContact,
+  updateContact,
+  deleteContact,
+} = require("../controllers/contactController");
+const { validateToken } = require("../middleware/validateTokenHandler");
 
 const router = express.Router();
 
-const { registerUser, loginUser, getCurrentUser } = require("../controllers/userController");
-const { validateToken } = require("../middleware/validateTokenHandler");
+router.use(validateToken); // Protect all routes
 
-
-
-// Public routes
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-
-// Private routes
-router.get("/current", validateToken, getCurrentUser);
+router.get("/", getContacts);
+router.post("/", createContact);
+router.put("/:id", updateContact);
+router.delete("/:id", deleteContact);
 
 module.exports = router;

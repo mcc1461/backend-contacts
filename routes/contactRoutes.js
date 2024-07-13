@@ -1,19 +1,19 @@
 const express = require("express");
-const router = express.Router();
 const {
   getContacts,
-  getContact,
   createContact,
   updateContact,
   deleteContact,
 } = require("../controllers/contactController");
 const { validateToken } = require("../middleware/validateTokenHandler");
 
+const router = express.Router();
 
-router.use(validateToken);
+router.use(validateToken); // Protect all routes
 
-router.route("/").get(getContacts).post(createContact);
-
-router.route("/:id").get(getContact).put(updateContact).delete(deleteContact);
+router.get("/", getContacts); // Ensure getContacts is correctly imported
+router.post("/", createContact); // Ensure createContact is correctly imported
+router.put("/:id", updateContact); // Ensure updateContact is correctly imported
+router.delete("/:id", deleteContact); // Ensure deleteContact is correctly imported
 
 module.exports = router;
