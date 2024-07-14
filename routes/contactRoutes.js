@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  getContact,
   getContacts,
   createContact,
   updateContact,
@@ -12,6 +13,7 @@ const router = express.Router();
 router.use(validateToken); // Protect all routes
 
 router.get("/", getContacts);
+router.get("/:id", getContact);
 router.post("/", createContact);
 router.put("/:id", updateContact);
 router.delete("/:id", deleteContact);

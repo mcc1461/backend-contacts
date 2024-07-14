@@ -34,9 +34,28 @@ const createContact = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Contact already exists");
   }
-  
+
   const createdContact = await contact.save();
   res.status(201).json(createdContact);
+});
+
+// @desc Get a contact
+// @route PUT /api/contacts/:id
+// @access Private
+const getContact = asyncHandler(async (req, res) => {
+  const contact = await Contact.findById(req.params.id);
+
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+
+  if (contact.user_id !== req.user.id && !req.user.isAdmin) {
+    res.status(401);
+    throw new Error("Not authorized to update this contact");
+  }
+  console.log(contact);
+  res.json(contact);
 });
 
 // @desc Update a contact
@@ -50,7 +69,7 @@ const updateContact = asyncHandler(async (req, res) => {
     throw new Error("Contact not found");
   }
 
-  if (contact.user.toString() !== req.user.id && !req.user.isAdmin) {
+  if (contact.user_id !== req.user.id && !req.user.isAdmin) {
     res.status(401);
     throw new Error("Not authorized to update this contact");
   }
@@ -85,4 +104,4 @@ const deleteContact = asyncHandler(async (req, res) => {
   res.status(200).json({ message: `Contact '${deletedContact.name} ${deletedContact.surname}' deleted successfully...` });
 });
 
-module.exports = { getContacts, createContact, updateContact, deleteContact };
+module.exports = { getContact, getContacts, createContact, updateContact, deleteContact };
