@@ -5,9 +5,9 @@ const { MONGO_URI } = process.env;
 
 const dbConnection = async () => {
   try {
-    const connect = await mongoose.connect(process.env.MONGO_URI);
+    const connect = await mongoose.connect(MONGO_URI);
     console.log(
-      `MongoDB connected: ${connect.connection.host} ${connect.connection.name}`
+      `MongoDB connected: mongodb.net ${connect.connection.name}`
     );
   } catch (error) {
     console.error(`Error: ${error.message}`);

@@ -11,9 +11,9 @@ const router = express.Router();
 
 router.use(validateToken); // Protect all routes
 
-router.get("/", getContacts); // Ensure getContacts is correctly imported
-router.post("/", createContact); // Ensure createContact is correctly imported
-router.put("/:id", updateContact); // Ensure updateContact is correctly imported
-router.delete("/:id", deleteContact); // Ensure deleteContact is correctly imported
+router.get("/", getContacts);
+router.post("/", createContact);
+router.put("/:id", updateContact);
+router.delete("/:id", deleteContact);
 
 module.exports = router;

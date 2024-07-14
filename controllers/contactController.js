@@ -18,15 +18,23 @@ const getContacts = asyncHandler(async (req, res) => {
 // @route POST /api/contacts
 // @access Private
 const createContact = asyncHandler(async (req, res) => {
-  const { name, email, phone } = req.body;
+  const { name, surname, email, phone, country, city } = req.body;
 
   const contact = new Contact({
-    user: req.user.id,
+    user_id: req.user.id,
     name,
+    surname,
     email,
     phone,
+    country,
+    city
   });
-
+  const checkContact = await Contact.findOne({ email });
+  if (checkContact) {
+    res.status(400);
+    throw new Error("Contact already exists");
+  }
+  
   const createdContact = await contact.save();
   res.status(201).json(createdContact);
 });
@@ -65,14 +73,16 @@ const deleteContact = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Contact not found");
   }
-
-  if (contact.user.toString() !== req.user.id && !req.user.isAdmin) {
+  console.log(contact);
+  
+  // Check if the user is authorized to delete the contact
+  if (contact.user_id !== req.user.id && !req.user.isAdmin) {
     res.status(401);
     throw new Error("Not authorized to delete this contact");
   }
-
-  await contact.remove();
-  res.json({ message: "Contact removed" });
+  const deletedContact = contact;
+  await contact.deleteOne({ _id: req.params.id});
+  res.status(200).json({ message: `Contact '${deletedContact.name} ${deletedContact.surname}' deleted successfully...` });
 });
 
 module.exports = { getContacts, createContact, updateContact, deleteContact };

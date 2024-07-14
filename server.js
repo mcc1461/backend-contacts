@@ -1,36 +1,24 @@
-const express = require('express');
-const cors = require('cors');
-const errorHandler = require('./middleware/errorHandler');
-require('dotenv').config();
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const errorHandler = require("./middleware/errorHandler");
+require("dotenv").config();
 const { exec } = require("child_process");
 
-const dbConnection = require('./config/dbConnection');
+const dbConnection = require("./config/dbConnection");
 
 dbConnection();
 
-const app = express();
 const PORT = process.env.PORT || 3007;
 
 app.use(cors());
 app.use(express.json());
 
-const contactRoutes = require('./routes/contactRoutes');
-const userRoutes = require('./routes/userRoutes')
+const contactRoutes = require("./routes/contactRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 app.use("/api/contacts", contactRoutes);
 app.use("/api/users", userRoutes);
-
-
-
-
-app.use(errorHandler);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  if (process.env.RUN_CREATE_ADMIN_USER === "true") {
-    createAdminUser();
-  }
-});
 
 // Function to run the createAdminUser.js script
 const createAdminUser = () => {
@@ -46,3 +34,14 @@ const createAdminUser = () => {
     console.log(`Script stdout: ${stdout}`);
   });
 };
+
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  if (process.env.RUN_CREATE_ADMIN_USER === "true") {
+    createAdminUser();
+  }
+});
+
+module.exports = { app };

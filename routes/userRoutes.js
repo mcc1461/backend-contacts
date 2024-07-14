@@ -1,19 +1,22 @@
 const express = require("express");
 const {
-  getContacts,
-  createContact,
-  updateContact,
-  deleteContact,
-} = require("../controllers/contactController");
-const { validateToken } = require("../middleware/validateTokenHandler");
+  registerUser,
+  loginUser,
+  getCurrentUser,
+  createAdminUser,
+} = require("../controllers/userController");
+const { validateToken, admin } = require("../middleware/validateTokenHandler");
 
 const router = express.Router();
 
-router.use(validateToken); // Protect all routes
+// Public routes
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-router.get("/", getContacts);
-router.post("/", createContact);
-router.put("/:id", updateContact);
-router.delete("/:id", deleteContact);
+// Private routes
+router.get("/current", validateToken, getCurrentUser);
+
+// Admin-specific route
+router.post("/create-admin", validateToken, admin, createAdminUser);
 
 module.exports = router;

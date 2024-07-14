@@ -20,4 +20,13 @@ const validateToken = (req, res, next) => {
   }
 };
 
-module.exports = { validateToken };
+const admin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(403); // Use 403 Forbidden for better semantic meaning
+    throw new Error("Not authorized as an admin");
+  }
+};
+
+module.exports = { validateToken, admin };

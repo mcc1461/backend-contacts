@@ -1,4 +1,3 @@
-require("../constants");
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode ? res.statusCode : 500;
   res.status(statusCode);
@@ -31,7 +30,7 @@ const errorHandler = (err, req, res, next) => {
       errorResponse.message = "Internal server error";
       break;
     default:
-      console.log("No Error... All gone well...");
+      console.log(err.message);
       return;
   }
 
