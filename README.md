@@ -7,12 +7,6 @@ This is a simple backend API for managing contacts using Node.js, Express, Mongo
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
-- [API Endpoints](#api-endpoints)
-  - [Auth Routes](#auth-routes)
-  - [Contact Routes](#contact-routes)
-- [Error Handling](#error-handling)
-- [Technologies Used](#technologies-used)
-- [License](#license)
 
 ## Installation
 
